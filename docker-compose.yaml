@@ -1,0 +1,29 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: wanderwise_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  backend:
+    build: ./server
+    container_name: wanderwise_backend
+    ports:
+      - "5050:5050"
+    env_file:
+      - ./server/.env
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./client
+    container_name: wanderwise_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongodb_data:

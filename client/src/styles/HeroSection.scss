@@ -1,0 +1,56 @@
+// HeroSection.scss
+.hero {
+  text-align: center;
+  background: linear-gradient(to bottom, #fcd5ed, #fff);
+  padding: 6rem 2rem;
+  border-radius: 12px;
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #eb4a96;
+  }
+
+  .tagline {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .description {
+    max-width: 700px;
+    margin: 0.5rem auto;
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  button {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    padding: 0.75rem 1.75rem;
+    background-color: #f2559f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background-color: #f62586;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(242, 85, 159, 0.3);
+    }
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    
+      
+    }
+    
+  }
+}
