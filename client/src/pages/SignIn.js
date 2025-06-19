@@ -7,6 +7,10 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  useEffect(() => {
+    localStorage.removeItem('token'); 
+  }, []);
+  
 
 
 
@@ -21,12 +25,14 @@ export default function SignIn() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+  
       localStorage.setItem('token', data.token);
-      navigate('/form');
+      navigate('/form', { replace: true }); 
     } catch (err) {
       setError(err.message);
     }
   };
+  
 
   return (
     <div className="signin-container">

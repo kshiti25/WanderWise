@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState,useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate,useNavigate } from 'react-router-dom';
 import HeroSection from './components/HeroSection';
 import DestinationForm from './components/DestinationForm';
 import PreferencesForm from './components/PreferencesForm';
@@ -21,9 +21,22 @@ function FormFlow() {
   const [formData, setFormData] = useState({});
   const [itinerary, setItinerary] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  if (!localStorage.getItem('token')) {
+    return <Navigate to="/signin" replace />;
+  }
 
 
-  const handleNext = () => setStep(step + 1);
+  const handleNext = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/signin', { replace: true });
+      return;
+    }
+    setStep(prev => prev + 1);
+  };
+  
   const handleBack = () => setStep(step - 1);
 
   const handleDestinationSubmit = (data) => {
@@ -54,6 +67,28 @@ function FormFlow() {
      
     }
   };
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/signin', { replace: true });
+      }
+    };
+  
+    checkAuth(); // check once on load
+  
+    const handlePopState = () => {
+      checkAuth(); // check again on browser back/forward
+    };
+  
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+  
+  
   
 
   const handleReset = () => {
@@ -64,12 +99,15 @@ function FormFlow() {
 
   return (
     <div className="app">
-      <button onClick={() => {
-  localStorage.removeItem('token');
-  window.location.href = '/signin';
-}} className="logout-button">
-  Logout
-</button>
+      <button
+        onClick={() => {
+          localStorage.removeItem('token');
+          window.location.replace('/signin'); // Prevent going back to /form
+        }}
+        className="logout-button"
+      >
+        Logout
+      </button>
 
       {step === 0 && <HeroSection onNext={handleNext} />}
       {step === 1 && <DestinationForm onSubmit={handleDestinationSubmit} />}

@@ -1,7 +1,18 @@
 import React from 'react';
 import '../styles/HeroSection.scss';
+import { useNavigate } from 'react-router-dom';
 
 function HeroSection({ onNext }) {
+  const navigate = useNavigate();
+
+  const handleNextClick = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/signin'); 
+    } else {
+      onNext(); 
+    }
+  };
   return (
     <div className="hero">
       <h1>Welcome to WanderWise</h1>
