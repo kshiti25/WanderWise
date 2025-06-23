@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/FinalizeItinerary.scss';
+import useRequireAuth from '../hooks/useRequireAuth';
 
 function FinalizeItinerary({ onBack, onGenerate, formData }) {
   const {
@@ -12,6 +13,9 @@ function FinalizeItinerary({ onBack, onGenerate, formData }) {
     notes,
     tripType
   } = formData;
+  useRequireAuth();
+
+  
 
   return (
     <div className="finalize">

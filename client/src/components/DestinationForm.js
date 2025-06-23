@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/DestinationForm.scss';
+import useRequireAuth from '../hooks/useRequireAuth';
+
+
 
 function DestinationForm({ onSubmit }) {
   const [destination, setDestination] = useState('');
@@ -9,6 +12,17 @@ function DestinationForm({ onSubmit }) {
   const [endDate, setEndDate] = useState(null);
   const [tripType, setTripType] = useState('');
   const [customTripType, setCustomTripType] = useState('');
+  useRequireAuth();
+
+
+  const handleNextClick = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/signin'); 
+    } else {
+      onNext(); 
+    }
+  };
 
 
   const handleSubmit = (e) => {

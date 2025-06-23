@@ -10,6 +10,7 @@ import SignUp from './pages/SignUp';
 import ResetPassword from './pages/ResetPassword';
 import './styles/App.scss';
 import axios from 'axios';
+import useRequireAuth from './hooks/useRequireAuth';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -22,12 +23,11 @@ function FormFlow() {
   const [itinerary, setItinerary] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  if (!localStorage.getItem('token')) {
-    return <Navigate to="/signin" replace />;
-  }
+  useRequireAuth();
+ 
 
 
+ 
   const handleNext = () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -67,26 +67,7 @@ function FormFlow() {
      
     }
   };
-  useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/signin', { replace: true });
-      }
-    };
-  
-    checkAuth(); // check once on load
-  
-    const handlePopState = () => {
-      checkAuth(); // check again on browser back/forward
-    };
-  
-    window.addEventListener('popstate', handlePopState);
-    
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [navigate]);
+ 
   
   
   
@@ -131,6 +112,7 @@ function FormFlow() {
   );
 }
 function App() {
+ 
   return (
     <Router>
       <Routes>

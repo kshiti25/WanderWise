@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import '../styles/PreferenceForm.scss';
+import useRequireAuth from '../hooks/useRequireAuth';
 
 function PreferencesForm({ onSubmit, onBack }) {
   const [budget, setBudget] = useState('');
   const [interests, setInterests] = useState([]);
   const [style, setStyle] = useState('');
   const [notes, setNotes] = useState('');
+  useRequireAuth();
+  
 
   const handleCheckboxChange = (interest) => {
     setInterests(prev =>
@@ -19,6 +22,7 @@ function PreferencesForm({ onSubmit, onBack }) {
     e.preventDefault();
     onSubmit({ budget, interests, style, notes });
   };
+
 
   return (
     <form className="preferences-form" onSubmit={handleSubmit}>

@@ -1,5 +1,5 @@
 .itinerary-result {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 2rem auto;
   background: #fdfdfd;
   padding: 2rem;
@@ -15,7 +15,27 @@
     color: #f2559f;
     text-align: center;
   }
-
+  .print-container {
+    max-height: 400px;
+    overflow-y: auto;
+    background: #f7f7f7;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+  
+    @media print {
+      max-height: none !important;
+      overflow: visible !important;
+      height: auto !important;
+      background: white !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+    }
+  }
+  
   pre {
     background: #f5f5f5;
     border-left: 4px solid #f2559f;
@@ -25,10 +45,15 @@
     font-size: 1rem;
     white-space: pre-wrap;
     word-wrap: break-word;
-    max-height: 400px; // Add scrolling if too long
-    overflow-y: auto;
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+  
+    @media print {
+      max-height: none !important;
+      overflow: visible !important;
+      page-break-inside: avoid;
+    }
   }
+  
 
   .actions {
     display: flex;
