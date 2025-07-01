@@ -1,11 +1,11 @@
 import React from 'react';
 import '../styles/HeroSection.scss';
 import { useNavigate } from 'react-router-dom';
-import useRequireAuth from '../hooks/useRequireAuth';
+
 
 function HeroSection({ onNext }) {
   const navigate = useNavigate();
-  useRequireAuth();
+
 
  
   return (

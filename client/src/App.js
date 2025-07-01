@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate,useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import HeroSection from './components/HeroSection';
 import DestinationForm from './components/DestinationForm';
 import PreferencesForm from './components/PreferencesForm';
@@ -10,12 +10,8 @@ import SignUp from './pages/SignUp';
 import ResetPassword from './pages/ResetPassword';
 import './styles/App.scss';
 import axios from 'axios';
-import useRequireAuth from './hooks/useRequireAuth';
+import PrivateRoute from './components/PrivateRoute';
 
-function PrivateRoute({ children }) {
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/signin" />;
-}
 
 function FormFlow() {
   const [step, setStep] = useState(0);
@@ -23,20 +19,15 @@ function FormFlow() {
   const [itinerary, setItinerary] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  useRequireAuth();
- 
+
+  
 
 
- 
   const handleNext = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/signin', { replace: true });
-      return;
-    }
     setStep(prev => prev + 1);
   };
   
+
   const handleBack = () => setStep(step - 1);
 
   const handleDestinationSubmit = (data) => {
@@ -49,27 +40,21 @@ function FormFlow() {
     handleNext();
   };
 
+
   const handleGenerate = async () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     setStep(4);
     try {
       const response = await axios.post('/api/generate-itinerary', formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+        withCredentials: true
       });
       setItinerary(response.data.itinerary);
-     
     } catch (err) {
       console.error('Failed to generate itinerary:', err);
     } finally {
-      setLoading(false); // Stop loading
-     
+      setLoading(false);
     }
   };
- 
-  
-  
   
 
   const handleReset = () => {
@@ -77,13 +62,15 @@ function FormFlow() {
     setFormData({});
     setItinerary('');
   };
+ 
+  
 
   return (
     <div className="app">
       <button
-        onClick={() => {
-          localStorage.removeItem('token');
-          window.location.replace('/signin'); // Prevent going back to /form
+        onClick={async () => {
+          await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+          window.location.replace('/signin');
         }}
         className="logout-button"
       >
@@ -93,26 +80,22 @@ function FormFlow() {
       {step === 0 && <HeroSection onNext={handleNext} />}
       {step === 1 && <DestinationForm onSubmit={handleDestinationSubmit} />}
       {step === 2 && <PreferencesForm onSubmit={handlePreferencesSubmit} onBack={handleBack} />}
-
       {step === 3 && <FinalizeItinerary onBack={handleBack} onGenerate={handleGenerate} formData={formData} />}
       {step === 4 && (
-  loading ? (
-    <div className="itinerary-result">
-      <h2>Generating your itinerary...</h2>
-      <p>Please wait a moment ⏳</p>
-    </div>
-  ) : (
-    <ItineraryResult itinerary={itinerary} onReset={handleReset} />
-  )
-)}
-
-
-
+        loading ? (
+          <div className="itinerary-result">
+            <h2>Generating your itinerary...</h2>
+            <p>Please wait a moment ⏳</p>
+          </div>
+        ) : (
+          <ItineraryResult itinerary={itinerary} onReset={handleReset} />
+        )
+      )}
     </div>
   );
 }
+
 function App() {
- 
   return (
     <Router>
       <Routes>
@@ -121,6 +104,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/form" element={<PrivateRoute><FormFlow /></PrivateRoute>} />
+
       </Routes>
     </Router>
   );

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import '../styles/PreferenceForm.scss';
-import useRequireAuth from '../hooks/useRequireAuth';
+
 
 function PreferencesForm({ onSubmit, onBack }) {
-  const [budget, setBudget] = useState('');
+  const [budget, setBudget] = useState(3);
   const [interests, setInterests] = useState([]);
   const [style, setStyle] = useState('');
   const [notes, setNotes] = useState('');
-  useRequireAuth();
+
   
 
   const handleCheckboxChange = (interest) => {
@@ -30,15 +30,15 @@ function PreferencesForm({ onSubmit, onBack }) {
       <p className="subheading">Let us know your preferences</p>
 
       <label htmlFor="budget">Budget (1 = Low, 5 = Luxury): {budget}</label>
-<input
+      <input
   type="range"
   id="budget"
   min="1"
   max="5"
   value={budget}
-  onChange={(e) => setBudget(e.target.value)}
-  required
+  onChange={(e) => setBudget(Number(e.target.value))}
 />
+
 
 
       <label>Interests</label>
